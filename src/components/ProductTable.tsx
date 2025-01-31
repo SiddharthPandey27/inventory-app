@@ -40,7 +40,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ isAdmin }) => {
   };
 
   return (
-    <div className="bg-gray-800 p-6 rounded-lg shadow-lg mt-6">
+    <div className="bg-[#1e1e1e] p-6 rounded-lg shadow-lg mt-6">
       <Table>
         <TableHead>
           <TableRow>
