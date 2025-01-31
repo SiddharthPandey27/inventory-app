@@ -14,7 +14,7 @@ const AdminView: React.FC = () => {
     return (
         <div className="p-4 min-h-screen text-white">
             {/* Add "Inventory Stats" Title */}
-            <h1 className="text-3xl font-bold text-center mb-6">Inventory Stats</h1>
+            <h1 className="text-3xl font-bold mb-6">Inventory Stats</h1>
 
             {/* Widgets Section */}
             <Widgets />

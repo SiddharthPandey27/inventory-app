@@ -24,7 +24,7 @@ const Widgets: React.FC = () => {
             {widgetData.map(widget => (
                 <Grid item xs={12} sm={6} md={3} key={widget.label}>
                     {/* Update Card Background to Dark Green */}
-                    <Card className="bg-green-700 text-white rounded-lg shadow-md">
+                    <Card className="!bg-[#051f0f] text-white rounded-lg shadow-md">
                         <CardContent className="flex items-center">
                             <widget.icon className="text-3xl text-white mr-4" />
                             <div>
