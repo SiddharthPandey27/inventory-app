@@ -6,7 +6,7 @@ interface Product {
   category: string;
   price: number;
   quantity: number;
-  value: number;
+  value: string;
   disabled: boolean;
 }
 

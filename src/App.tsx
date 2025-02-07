@@ -12,9 +12,7 @@ const App: React.FC = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Header isAdmin={isAdmin} onToggle={() => setIsAdmin(!isAdmin)} />
-      <div className="p-6">
-        {isAdmin ? <AdminView /> : <UserView />}
-      </div>
+      {isAdmin ? <AdminView /> : <UserView />}
     </ThemeProvider>
   );
 };

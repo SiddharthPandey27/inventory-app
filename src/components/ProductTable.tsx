@@ -20,7 +20,7 @@ interface Product {
   category: string;
   price: number;
   quantity: number;
-  value: number;
+  value: string;
   disabled: boolean;
 }
 
@@ -40,7 +40,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ isAdmin }) => {
   };
 
   return (
-    <div className="bg-[#1e1e1e] p-6 rounded-lg shadow-lg mt-6">
+    <div className="bg-[#1e1e1e] rounded-lg shadow-lg mt-6">
       <Table>
         <TableHead>
           <TableRow>

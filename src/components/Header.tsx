@@ -17,12 +17,23 @@ const Header: React.FC<HeaderProps> = ({ isAdmin, onToggle }) => {
       <div className="flex items-center space-x-4">
         <span className="text-white font-medium">admin</span>
         <Switch
-          checked={isAdmin}
+          checked={!isAdmin}
           onChange={onToggle}
-          color="success"
+          sx={{
+            '& .MuiSwitch-switchBase.Mui-checked': {
+              color: '#bfbfbf', // Default thumb color for checked state
+            },
+            '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+              backgroundColor: '#bfbfbf', // Default track color for checked state
+            },
+            '& .MuiSwitch-track': {
+              backgroundColor: '#bfbfbf', // Default track color for unchecked state
+            },
+          }}
           inputProps={{ 'aria-label': 'Admin/User toggle' }}
         />
         <span className="text-white font-medium">user</span>
+        <div className="w-px h-6 bg-gray-600" />
         <IconButton color="inherit">
           <ExitToApp fontSize="medium" className="text-white" />
         </IconButton>
