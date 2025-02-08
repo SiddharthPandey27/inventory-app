@@ -72,12 +72,16 @@ const ProductTable: React.FC<ProductTableProps> = ({ isAdmin }) => {
 
   return (
     <div className="bg-[#1f1f1f] rounded-lg shadow-lg mt-6">
-      <div className="overflow-hidden rounded-lg">
+      <div className="overflow-x-auto">
         <Table>
           <TableHead>
             <TableRow>
               {['Name', 'Category', 'Price', 'Quantity', 'Value', 'ACTION'].map((header) => (
-                <TableCell key={header} className="px-4 py-3">
+                <TableCell
+                  key={header}
+                  className="px-4 py-3"
+                  style={header === 'ACTION' ? { width: '150px' } : undefined}
+                >
                   <span className="rounded-md bg-[#1a1a1a] px-4 py-2 text-[0.7rem] text-lime-400">
                     {header}
                   </span>
@@ -99,7 +103,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ isAdmin }) => {
                 <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm">{formatCurrency(product.price)}</TableCell>
                 <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm">{product.quantity}</TableCell>
                 <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm">{formatCurrency(product.value)}</TableCell>
-                <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm">
+                <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm flex items-center justify-between">
                   {isAdmin && (
                     <>
                       <IconButton
