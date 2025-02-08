@@ -12,14 +12,8 @@ const AdminView: React.FC = () => {
     }, [dispatch]);
 
     return (
-        <div className="p-4 min-h-screen text-white">
-            {/* Add "Inventory Stats" Title */}
-            <h1 className="text-[2.75rem] mb-6">Inventory stats</h1>
-
-            {/* Widgets Section */}
+        <div className="min-h-screen text-white">
             <Widgets />
-
-            {/* Product Table */}
             <ProductTable isAdmin />
         </div>
     );
