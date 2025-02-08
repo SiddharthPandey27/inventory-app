@@ -103,9 +103,9 @@ const ProductTable: React.FC<ProductTableProps> = ({ isAdmin }) => {
                 <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm">{formatCurrency(product.price)}</TableCell>
                 <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm">{product.quantity}</TableCell>
                 <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm">{formatCurrency(product.value)}</TableCell>
-                <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm flex items-center justify-between">
+                <TableCell className="px-4 py-3 text-[#e0e0e0] flex items-center justify-between">
                   {isAdmin && (
-                    <>
+                    <div className='flex flex-row gap-3'>
                       <IconButton
                         onClick={() =>
                           !product.disabled &&
@@ -132,7 +132,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ isAdmin }) => {
                       >
                         <FaTrashAlt className="text-sm" />
                       </IconButton>
-                    </>
+                    </div>
                   )}
                 </TableCell>
               </TableRow>
