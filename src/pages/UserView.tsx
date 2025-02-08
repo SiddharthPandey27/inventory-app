@@ -8,7 +8,6 @@ const UserView: React.FC = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        // Fetch inventory data when the User view is loaded
         fetchInventoryData(dispatch);
     }, [dispatch]);
 

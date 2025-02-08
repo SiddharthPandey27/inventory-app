@@ -10,26 +10,13 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ isAdmin, onToggle }) => {
   return (
     <div className="flex justify-between items-center px-6 py-4 shadow-md">
-      {/* Empty space for alignment */}
       <div className="flex-grow" />
-
-      {/* Right Side: Switch and Exit Button */}
       <div className="flex items-center space-x-4">
         <span className="text-white font-medium">admin</span>
         <Switch
           checked={!isAdmin}
           onChange={onToggle}
-          sx={{
-            '& .MuiSwitch-switchBase.Mui-checked': {
-              color: '#bfbfbf', // Default thumb color for checked state
-            },
-            '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-              backgroundColor: '#bfbfbf', // Default track color for checked state
-            },
-            '& .MuiSwitch-track': {
-              backgroundColor: '#bfbfbf', // Default track color for unchecked state
-            },
-          }}
+          color='success'
           inputProps={{ 'aria-label': 'Admin/User toggle' }}
         />
         <span className="text-white font-medium">user</span>

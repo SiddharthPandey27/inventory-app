@@ -1,14 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface Product {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  quantity: number;
-  value: string;
-  disabled: boolean;
-}
+import { Product } from '../types/types';
 
 interface InventoryState {
   products: Product[];
@@ -25,23 +16,25 @@ const inventorySlice = createSlice({
     setProducts: (state, action: PayloadAction<Product[]>) => {
       state.products = action.payload;
     },
-    updateProduct: (state, action: PayloadAction<Product>) => {
-      const index = state.products.findIndex(p => p.id === action.payload.id);
-      if (index !== -1) {
-        state.products[index] = action.payload;
-      }
+    updateProduct: (
+      state,
+      action: PayloadAction<{ product: Product; productIndex: number }>
+    ) => {
+      const { product, productIndex } = action.payload;
+      state.products[productIndex] = product;
+    },    
+    deleteProduct: (state, action: PayloadAction<number>) => {
+      state.products = state.products.filter((_, index) => index !== action.payload);
     },
-    deleteProduct: (state, action: PayloadAction<string>) => {
-      state.products = state.products.filter(p => p.id !== action.payload);
-    },
-    disableProduct: (state, action: PayloadAction<string>) => {
-      const product = state.products.find(p => p.id === action.payload);
+    toggleProductDisabled: (state, action: PayloadAction<number>) => {
+      const product = state.products[action.payload];
       if (product) {
-        product.disabled = true;
+        product.disabled = !product.disabled;
       }
     },
   },
 });
 
-export const { setProducts, updateProduct, deleteProduct, disableProduct } = inventorySlice.actions;
+export const { setProducts, updateProduct, deleteProduct, toggleProductDisabled } =
+  inventorySlice.actions;
 export default inventorySlice.reducer;

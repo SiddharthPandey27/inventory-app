@@ -7,21 +7,25 @@ import {
   TableBody,
   IconButton,
 } from '@mui/material';
-import { FaPen, FaTrashAlt, FaRegEye } from 'react-icons/fa';
+import { FaPen, FaTrashAlt, FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
-import { deleteProduct, disableProduct } from '../redux/inventorySlice';
+import { deleteProduct, toggleProductDisabled, updateProduct } from '../redux/inventorySlice';
 import EditModal from './EditModal';
 
-// Define the Product type
 interface Product {
   id: string;
   name: string;
   category: string;
-  price: string | number; // Allow both string and number
+  price: string | number;
   quantity: number;
-  value: string;
+  value: string | number;
   disabled: boolean;
+}
+
+interface EditProductState {
+  product: Product;
+  productIndex: number;
 }
 
 interface ProductTableProps {
@@ -32,79 +36,95 @@ const ProductTable: React.FC<ProductTableProps> = ({ isAdmin }) => {
   const products = useSelector((state: RootState) => state.inventory.products);
   const dispatch = useDispatch();
 
-  const [editProduct, setEditProduct] = useState<Product | null>(null);
+  const [editProduct, setEditProduct] = useState<EditProductState | null>(null);
 
-  const handleDelete = (id: string) => {
-    dispatch(deleteProduct(id));
+  const handleDelete = (productIndex: number) => {
+    dispatch(deleteProduct(productIndex));
   };
 
-  const parsePrice = (price: string | number): number => {
-    const numericPrice = typeof price === 'string' ? parseFloat(price.replace('$', '')) : price;
-    return numericPrice;
+  const handleDisable = (productIndex: number) => {
+    dispatch(toggleProductDisabled(productIndex));
+  };
+
+  const handleSave = (updatedProduct: Product) => {
+    if (editProduct) {
+      const parsedProduct = {
+        ...updatedProduct,
+        price: typeof updatedProduct.price === 'string'
+          ? parseFloat(updatedProduct.price.replace('$', '')) || 0
+          : updatedProduct.price,
+        quantity: updatedProduct.quantity || 0,
+        value:
+          (typeof updatedProduct.price === 'string'
+            ? parseFloat(updatedProduct.price.replace('$', ''))
+            : updatedProduct.price || 0) * (updatedProduct.quantity || 0),
+      };
+      dispatch(updateProduct({ product: parsedProduct, productIndex: editProduct.productIndex }));
+      setEditProduct(null);
+    }
+  };
+
+  const formatCurrency = (value: string | number): string => {
+    const numericValue =
+      typeof value === 'string' ? parseFloat(value.replace('$', '')) : value;
+    return isNaN(numericValue) ? '$0' : `$${numericValue}`;
   };
 
   return (
     <div className="bg-[#1f1f1f] rounded-lg shadow-lg mt-6">
       <div className="overflow-hidden rounded-lg">
         <Table>
-          {/* Table Head */}
           <TableHead>
             <TableRow>
-              {['Name', 'Category', 'Price', 'Quantity', 'Value', 'ACTION'].map(
-                (header) => (
-                  <TableCell
-                    key={header}
-                    className="px-4 py-3"
-                  >
-                    <span className="rounded-md bg-[#1a1a1a] px-4 py-2 text-[0.7rem] text-lime-400">
-                      {header}
-                    </span>
-                  </TableCell>
-                )
-              )}
+              {['Name', 'Category', 'Price', 'Quantity', 'Value', 'ACTION'].map((header) => (
+                <TableCell key={header} className="px-4 py-3">
+                  <span className="rounded-md bg-[#1a1a1a] px-4 py-2 text-[0.7rem] text-lime-400">
+                    {header}
+                  </span>
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
 
-          {/* Table Body */}
           <TableBody>
-            {products.map((product) => (
+            {products.map((product, productIndex) => (
               <TableRow
-                key={product.id}
-                className="hover:bg-[#333333] transition duration-200"
+                key={`${product.name}_${productIndex}`}
+                className={`hover:bg-[#333333] transition duration-200 ${
+                  product.disabled ? 'opacity-50' : ''
+                }`}
               >
-                <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm">
-                  {product.name}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm">
-                  {product.category}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm">
-                  ${parsePrice(product.price)}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm">
-                  {product.quantity}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm">
-                  ${parsePrice(product.value)}
-                </TableCell>
+                <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm">{product.name}</TableCell>
+                <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm">{product.category}</TableCell>
+                <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm">{formatCurrency(product.price)}</TableCell>
+                <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm">{product.quantity}</TableCell>
+                <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm">{formatCurrency(product.value)}</TableCell>
                 <TableCell className="px-4 py-3 text-[#e0e0e0] text-sm">
                   {isAdmin && (
                     <>
                       <IconButton
-                        onClick={() => setEditProduct(product)}
+                        onClick={() =>
+                          !product.disabled &&
+                          setEditProduct({
+                            product: { ...product },
+                            productIndex,
+                          })
+                        }
                         className="!text-[#017001]"
+                        disabled={product.disabled}
                       >
                         <FaPen className="text-sm" />
                       </IconButton>
-                      <IconButton
-                        onClick={() => dispatch(disableProduct(product.id))}
-                        className="!text-[#f786f7]"
-                      >
-                        <FaRegEye className="text-sm" />
+                      <IconButton onClick={() => handleDisable(productIndex)} className="!text-[#f786f7]">
+                        {product.disabled ? (
+                          <FaRegEyeSlash className="text-[1.2rem]" />
+                        ) : (
+                          <FaRegEye className="text-[1.2rem]" />
+                        )}
                       </IconButton>
                       <IconButton
-                        onClick={() => handleDelete(product.id)}
-                        className="!text-[#FF6B6B]"
+                        onClick={() => !product.disabled && handleDelete(productIndex)}
+                        className={`!text-[#FF6B6B] ${product.disabled ? 'pointer-events-none' : ''}`}
                       >
                         <FaTrashAlt className="text-sm" />
                       </IconButton>
@@ -117,9 +137,12 @@ const ProductTable: React.FC<ProductTableProps> = ({ isAdmin }) => {
         </Table>
       </div>
 
-      {/* Edit Modal */}
       {editProduct && (
-        <EditModal product={editProduct} onClose={() => setEditProduct(null)} />
+        <EditModal
+          product={editProduct.product}
+          onClose={() => setEditProduct(null)}
+          onSave={handleSave}
+        />
       )}
     </div>
   );
